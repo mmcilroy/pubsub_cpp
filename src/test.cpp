@@ -7,19 +7,37 @@
 const size_t N = 1024 * 1024;
 const size_t Q = 8;
 
+//const size_t N = 256;
+//const size_t Q = 2;
+
 struct test_data
 {
     long t;
     long v;
 };
 
-void do_publish( publisher< test_data >* p, long t )
+void do_publish_st( publisher< test_data >* p, long t )
 {
     for( size_t i=0; i<N; )
     {
         p->publish( 1, [&]( test_data& e ){
             e.t = t; e.v = i++;
         } );
+    }
+}
+
+void do_publish_mt( publisher< test_data >* p, long t )
+{
+    static std::mutex mut;
+
+    for( size_t i=0; i<N; )
+    {
+        {
+            std::unique_lock< std::mutex > lock( mut );
+            p->publish( 1, [&]( test_data& e ){
+                e.t = t; e.v = i++;
+            } );
+        }
     }
 }
 
@@ -64,8 +82,9 @@ void testcase( size_t P, size_t S, bool parallel )
     auto start = std::chrono::high_resolution_clock::now();
 
     std::vector< std::thread > pv;
+
     for( int i=0; i<P; i++ ) {
-        pv.push_back( std::thread( do_publish, &p0, i ) );
+        pv.push_back( std::thread( ( P == 1 ? do_publish_st : do_publish_mt ), &p0, i ) );
     }
 
     for( int i=0; i<S; i++ ) {
@@ -79,7 +98,7 @@ void testcase( size_t P, size_t S, bool parallel )
     auto millis = std::chrono::duration_cast< std::chrono::milliseconds >(
         std::chrono::high_resolution_clock::now() - start ).count() + 1;
 
-    std::cout << P << " to " << S << " " << ( parallel ? "parallel" : "pipeline" ) << ": " << ( N * 1000 ) / millis << std::endl;
+    std::cout << P << " to " << S << " " << ( parallel ? "parallel" : "pipeline" ) << ": " << ( N * P * 1000 ) / millis << std::endl;
 }
 
 int main()

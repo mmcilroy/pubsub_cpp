@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pos.hpp"
+#include "sequence.hpp"
 
 template< typename T >
 class publisher;
@@ -10,7 +10,7 @@ class subscriber
 {
 friend class publisher< T >;
 public:
-    subscriber( publisher< T >&, pos& );
+    subscriber( publisher< T >&, sequence& );
 
     subscriber< T >& subscribe();
 
@@ -19,8 +19,8 @@ public:
 
 private:
     publisher< T >& pub_;
-    pos& head_;
-    pos tail_;
+    sequence& head_;
+    sequence tail_;
 };
 
 #include "subscriber.inl"

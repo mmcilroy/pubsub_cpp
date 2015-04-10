@@ -4,7 +4,6 @@
 
 #include <memory>
 #include <vector>
-#include <mutex>
 #include <thread>
 
 template< typename T >
@@ -20,19 +19,17 @@ public:
     void publish( size_t, F func );
 
 private:
-    subscriber< T >& subscribe( pos& );
+    subscriber< T >& subscribe( sequence& );
 
-    T& at( pos::value_type );
+    T& at( sequence::value_type );
 
-    pos::value_type tail();
-
-    std::mutex mut_;
+    sequence::value_type tail();
 
     size_t size_;
 
     std::unique_ptr< T[] > data_;
 
-    pos head_;
+    sequence head_;
 
     typedef std::vector< std::unique_ptr< subscriber< T > > > subscriber_list;
     subscriber_list tail_;
