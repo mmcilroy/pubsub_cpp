@@ -1,20 +1,20 @@
-template< typename T >
-inline subscriber< T >::subscriber( publisher< T >& pub, sequence& head ) :
+template< typename T, typename S >
+inline subscriber< T, S >::subscriber( publisher< T, S >& pub, S& head ) :
     pub_( pub ),
     head_( head )
 {
 }
 
-template< typename T >
+template< typename T, typename S >
 template< typename F >
-inline void subscriber< T >::dispatch( F func )
+inline void subscriber< T, S >::dispatch( F func )
 {
     bool done = false;
 
     while( !done )
     {
-        sequence::value_type a;
-        sequence::value_type t = tail_.load( std::memory_order_relaxed );
+        typename S::value_type a;
+        typename S::value_type t = tail_.load( std::memory_order_relaxed );
 
         while( ( a = head_.load( std::memory_order_acquire ) - t ) < 1 ) {
             head_.wait( t );
@@ -28,8 +28,8 @@ inline void subscriber< T >::dispatch( F func )
     }
 }
 
-template< typename T >
-subscriber< T >& subscriber< T >::subscribe()
+template< typename T, typename S >
+subscriber< T, S >& subscriber< T, S >::subscribe()
 {
     return pub_.subscribe( tail_ );
 }

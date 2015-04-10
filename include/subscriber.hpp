@@ -2,25 +2,25 @@
 
 #include "sequence.hpp"
 
-template< typename T >
+template< typename T, typename S >
 class publisher;
 
-template< typename T >
+template< typename T, typename S=yielding_sequence >
 class subscriber
 {
-friend class publisher< T >;
+friend class publisher< T, S >;
 public:
-    subscriber( publisher< T >&, sequence& );
+    subscriber( publisher< T, S >&, S& );
 
-    subscriber< T >& subscribe();
+    subscriber< T, S >& subscribe();
 
     template< typename F >
     void dispatch( F func );
 
 private:
-    publisher< T >& pub_;
-    sequence& head_;
-    sequence tail_;
+    publisher< T, S >& pub_;
+    S& head_;
+    S  tail_;
 };
 
 #include "subscriber.inl"

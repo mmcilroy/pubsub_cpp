@@ -1,15 +1,15 @@
-template< typename T >
-inline publisher< T >::publisher( size_t n ) :
+template< typename T, typename S >
+inline publisher< T, S >::publisher( size_t n ) :
     size_( 1<<n ),
     data_( new T[ size_ ] )
 {
 }
 
-template< typename T >
+template< typename T, typename S >
 template< typename F >
-inline void publisher< T >::publish( size_t n, F func )
+inline void publisher< T, S >::publish( size_t n, F func )
 {
-    sequence::value_type h = head_.load( std::memory_order_relaxed );
+    typename S::value_type h = head_.load( std::memory_order_relaxed );
 
     while( h - tail() > size_ - n ) {
         std::this_thread::yield();
@@ -22,16 +22,16 @@ inline void publisher< T >::publish( size_t n, F func )
     head_.store( h+n, std::memory_order_release );
 }
 
-template< typename T >
-inline T& publisher< T >::at( sequence::value_type v )
+template< typename T, typename S >
+inline T& publisher< T, S >::at( typename S::value_type v )
 {
     return data_[ v & size_-1 ];
 }
 
-template< typename T >
-inline sequence::value_type publisher< T >::tail()
+template< typename T, typename S >
+inline typename S::value_type publisher< T, S >::tail()
 {
-    sequence::value_type tail_min = std::numeric_limits< sequence::value_type >::max();
+    typename S::value_type tail_min = std::numeric_limits< typename S::value_type >::max();
     for( auto it = tail_.begin(); it != tail_.end(); ) {
         tail_min = std::min( (*it)->tail_.load( std::memory_order_relaxed ), tail_min ); it++;
     }
@@ -39,8 +39,8 @@ inline sequence::value_type publisher< T >::tail()
     return tail_min;
 }
 
-template< typename T >
-inline subscriber< T >& publisher< T >::subscribe()
+template< typename T, typename S >
+inline subscriber< T, S >& publisher< T, S >::subscribe()
 {
     tail_.push_back( std::unique_ptr< subscriber< T > >(
         new subscriber< T >( *this, head_ ) ) );
@@ -48,8 +48,8 @@ inline subscriber< T >& publisher< T >::subscribe()
     return *tail_.back();
 }
 
-template< typename T >
-inline subscriber< T >& publisher< T >::subscribe( sequence& p )
+template< typename T, typename S >
+inline subscriber< T, S >& publisher< T, S >::subscribe( S& p )
 {
     tail_.push_back( std::unique_ptr< subscriber< T > >(
         new subscriber< T >( *this, p ) ) );

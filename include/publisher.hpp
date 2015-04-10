@@ -6,32 +6,32 @@
 #include <vector>
 #include <thread>
 
-template< typename T >
+template< typename T, typename S=yielding_sequence >
 class publisher
 {
-friend class subscriber< T >;
+friend class subscriber< T, S >;
 public:
     publisher( size_t );
 
-    subscriber< T >& subscribe();
+    subscriber< T, S >& subscribe();
 
     template< typename F >
     void publish( size_t, F func );
 
 private:
-    subscriber< T >& subscribe( sequence& );
+    subscriber< T, S >& subscribe( S& );
 
-    T& at( sequence::value_type );
+    T& at( typename S::value_type );
 
-    sequence::value_type tail();
+    typename S::value_type tail();
 
     size_t size_;
 
     std::unique_ptr< T[] > data_;
 
-    sequence head_;
+    S head_;
 
-    typedef std::vector< std::unique_ptr< subscriber< T > > > subscriber_list;
+    typedef std::vector< std::unique_ptr< subscriber< T, S > > > subscriber_list;
     subscriber_list tail_;
 };
 

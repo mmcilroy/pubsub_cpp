@@ -4,11 +4,8 @@
 #include <cstring>
 #include <iostream>
 
-const size_t N = 1024 * 1024;
+const size_t N = 4 * 1024 * 1024;
 const size_t Q = 8;
-
-//const size_t N = 256;
-//const size_t Q = 2;
 
 struct test_data
 {

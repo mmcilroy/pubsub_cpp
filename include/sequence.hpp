@@ -2,6 +2,7 @@
 
 #include <atomic>
 #include <condition_variable>
+#include <thread>
 
 class sequence
 {
@@ -16,13 +17,29 @@ public:
     // set a new value
     void store( value_type v, std::memory_order o );
 
+protected:
+    std::atomic_uint_fast64_t value_;
+};
+
+class blocking_sequence : public sequence
+{
+public:
+    // set a new value
+    void store( value_type v, std::memory_order o );
+
     // wait until value changes to v
     void wait( value_type v );
 
 private:
-    std::atomic_uint_fast64_t value_;
     std::condition_variable cond_;
     std::mutex mut_;
+};
+
+class yielding_sequence : public sequence
+{
+public:
+    // wait until value changes to v
+    void wait( value_type v );
 };
 
 #include "sequence.inl"
