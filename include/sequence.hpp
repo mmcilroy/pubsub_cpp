@@ -11,10 +11,8 @@ public:
 
     sequence();
 
-    // get the current value
     value_type load( std::memory_order o ) const;
 
-    // set a new value
     void store( value_type v, std::memory_order o );
 
 protected:
@@ -24,10 +22,8 @@ protected:
 class blocking_sequence : public sequence
 {
 public:
-    // set a new value
     void store( value_type v, std::memory_order o );
 
-    // wait until value changes to v
     void wait( value_type v );
 
 private:
@@ -38,7 +34,6 @@ private:
 class yielding_sequence : public sequence
 {
 public:
-    // wait until value changes to v
     void wait( value_type v );
 };
 

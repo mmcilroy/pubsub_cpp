@@ -4,7 +4,6 @@
 
 #include <memory>
 #include <vector>
-#include <thread>
 
 template< typename T, typename S=yielding_sequence >
 class publisher
@@ -25,7 +24,9 @@ private:
 
     typename S::value_type tail();
 
-    size_t size_;
+    typename S::value_type size_;
+
+    typename S::value_type avail_;
 
     std::unique_ptr< T[] > data_;
 

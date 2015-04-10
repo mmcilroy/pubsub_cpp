@@ -1,6 +1,7 @@
 template< typename T, typename S >
 inline publisher< T, S >::publisher( size_t n ) :
     size_( 1<<n ),
+    avail_( 0 ),
     data_( new T[ size_ ] )
 {
 }
@@ -11,8 +12,11 @@ inline void publisher< T, S >::publish( size_t n, F func )
 {
     typename S::value_type h = head_.load( std::memory_order_relaxed );
 
-    while( h - tail() > size_ - n ) {
-        std::this_thread::yield();
+    if( avail_ < n )
+    {
+        while( ( avail_ = size_ - ( h - tail() ) ) < n ) {
+            std::this_thread::yield();
+        }
     }
 
     for( int i=0; i<n; i++ ) {
@@ -20,6 +24,8 @@ inline void publisher< T, S >::publish( size_t n, F func )
     }
 
     head_.store( h+n, std::memory_order_release );
+
+    avail_ -= n;
 }
 
 template< typename T, typename S >
