@@ -48,8 +48,8 @@ inline typename S::value_type publisher< T, S >::tail()
 template< typename T, typename S >
 inline subscriber< T, S >& publisher< T, S >::subscribe()
 {
-    tail_.push_back( std::unique_ptr< subscriber< T > >(
-        new subscriber< T >( *this, head_ ) ) );
+    tail_.push_back( std::unique_ptr< subscriber< T, S > >(
+        new subscriber< T, S >( *this, head_ ) ) );
 
     return *tail_.back();
 }
@@ -57,8 +57,8 @@ inline subscriber< T, S >& publisher< T, S >::subscribe()
 template< typename T, typename S >
 inline subscriber< T, S >& publisher< T, S >::subscribe( S& p )
 {
-    tail_.push_back( std::unique_ptr< subscriber< T > >(
-        new subscriber< T >( *this, p ) ) );
+    tail_.push_back( std::unique_ptr< subscriber< T, S > >(
+        new subscriber< T, S >( *this, p ) ) );
 
     return *tail_.back();
 }
