@@ -20,7 +20,7 @@ inline void publisher< T, S >::publish( size_t n, F func )
     }
 
     for( int i=0; i<n; i++ ) {
-        func( at( h+i ) );
+        func( at( h+i ), i );
     }
 
     head_.store( h+n, std::memory_order_release );

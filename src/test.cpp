@@ -17,7 +17,7 @@ void do_publish_st( publisher< test_data >* p, long t )
 {
     for( size_t i=0; i<N; )
     {
-        p->publish( 1, [&]( test_data& e ) {
+        p->publish( 1, [&]( test_data& e, size_t n ) {
             e.t = t; e.v = i++; //std::cout << "p " << e.v << std::endl;
         } );
     }
@@ -31,7 +31,7 @@ void do_publish_mt( publisher< test_data >* p, long t )
     {
         {
             std::unique_lock< std::mutex > lock( mut );
-            p->publish( 1, [&]( test_data& e ) {
+            p->publish( 1, [&]( test_data& e, size_t n ) {
                 e.t = t; e.v = i++;
             } );
         }
