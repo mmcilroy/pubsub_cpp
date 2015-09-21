@@ -5,6 +5,8 @@
 #include <memory>
 #include <vector>
 
+namespace pubsub {
+
 template< typename T, typename S=yielding_sequence >
 class publisher
 {
@@ -37,3 +39,5 @@ private:
 };
 
 #include "publisher.inl"
+
+}

@@ -4,6 +4,8 @@
 #include <condition_variable>
 #include <thread>
 
+namespace pubsub {
+
 class sequence
 {
 public:
@@ -38,3 +40,5 @@ public:
 };
 
 #include "sequence.inl"
+
+}

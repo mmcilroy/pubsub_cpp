@@ -1,4 +1,4 @@
-#include "publisher.hpp"
+#include "pubsub/publisher.hpp"
 
 #include <cassert>
 #include <cstring>
@@ -6,6 +6,8 @@
 
 const size_t N = 4 * 1024 * 1024;
 const size_t Q = 8;
+
+using namespace pubsub;
 
 struct test_data
 {

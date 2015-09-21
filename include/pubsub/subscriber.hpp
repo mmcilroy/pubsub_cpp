@@ -2,6 +2,8 @@
 
 #include "sequence.hpp"
 
+namespace pubsub {
+
 template< typename T, typename S >
 class publisher;
 
@@ -24,3 +26,5 @@ private:
 };
 
 #include "subscriber.inl"
+
+}
