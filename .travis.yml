@@ -1,4 +1,4 @@
 language: cpp
 compiler: gcc
-script: mkdir build && cd build && cmake .. && make && ./src/test
+script: sudo apt-get install -qq g++-4.8 && mkdir build && cd build && cmake .. && make && ./src/test
 
