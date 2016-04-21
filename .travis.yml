@@ -18,8 +18,8 @@ addons:
       name: "mmcilroy/pubsub_cpp"
       description: ""
     notification_email: m1rk.mci@gmail.com
-    build_command_prepend: "mkdir build && cd build && cmake .."
+    build_command_prepend: "mkdir -p build && cd build && cmake .."
     build_command: "make"
     branch_pattern: master
-script: mkdir build && cd build && cmake .. && make && ./src/test
+script: mkdir -p build && cd build && cmake .. && make && ./src/test
 
