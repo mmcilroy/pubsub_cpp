@@ -4,13 +4,22 @@ compiler:
   - gcc
 install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+env:
+  global:
+  - secure: "eTNYEVmk4o0M/rVKqHZK49c4Nu1LpVGwlSEW0kfLEZqyRzdVwczmhtmBwuokgUoiNtdW2Ph08qiiE9CC8yuBIvmDvCtWTmoiB51i4IyD0zlL7o5bOqPkBrgk4g1Zhvrwc8TabifbaV70m1oLOEVxBFB9gvKYbBqNHKgetRDREUI="
 addons:
   apt:
     sources:
     - ubuntu-toolchain-r-test
     packages:
-    - gcc-4.8
     - g++-4.8
-    - clang
+  coverity_scan:
+    project:
+      name: "mmcilroy/pubsub_cpp"
+      description: ""
+    notification_email: m1rk.mci@gmail.com
+    build_command_prepend: "mkdir build && cd build && cmake .."
+    build_command: "make"
+    branch_pattern: master
 script: mkdir build && cd build && cmake .. && make && ./src/test
 
